@@ -3,6 +3,7 @@ package com.github.novicezk.midjourney.support;
 import com.github.novicezk.midjourney.domain.DomainObject;
 import com.github.novicezk.midjourney.enums.TaskAction;
 import com.github.novicezk.midjourney.enums.TaskStatus;
+import com.github.novicezk.midjourney.util.OssUploader;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -38,6 +39,13 @@ public class Task extends DomainObject {
 	private Long startTime;
 	@ApiModelProperty("结束时间")
 	private Long finishTime;
+
+	public void setImageUrl(String imageUrl) {
+		if (imageUrl != null && imageUrl.startsWith("https://cdn.discordapp.com/attachments")) {
+			imageUrl = OssUploader.transToOssUrl(imageUrl);
+		}
+		this.imageUrl = imageUrl;
+	}
 
 	@ApiModelProperty("图片url")
 	private String imageUrl;

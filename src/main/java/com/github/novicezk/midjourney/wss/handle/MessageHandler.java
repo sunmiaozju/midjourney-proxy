@@ -11,14 +11,11 @@ import com.github.novicezk.midjourney.support.DiscordHelper;
 import com.github.novicezk.midjourney.support.Task;
 import com.github.novicezk.midjourney.support.TaskCondition;
 import com.github.novicezk.midjourney.util.ConvertUtils;
-import com.github.novicezk.midjourney.util.ImageDownloader;
 import com.github.novicezk.midjourney.util.OssUploader;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 
 import javax.annotation.Resource;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.Set;
@@ -115,17 +112,6 @@ public abstract class MessageHandler {
 		}
 		String cdnUrl = CharSequenceUtil.replaceFirst(imageUrl, DiscordHelper.DISCORD_CDN_URL, cdn);
 
-		return transToOssUrl(cdnUrl);
-	}
-
-	protected String transToOssUrl(String imageUrl) {
-		InputStream inputStream = ImageDownloader.downloadImage(imageUrl);
-
-		// 提取图片文件名称
-		String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
-		fileName = System.currentTimeMillis() + "-" + fileName;
-		OssUploader.uploadToOss(fileName, inputStream);
-		URL url = OssUploader.generatePublicUrl(fileName);
-		return url.toString();
+		return OssUploader.transToOssUrl(cdnUrl);
 	}
 }

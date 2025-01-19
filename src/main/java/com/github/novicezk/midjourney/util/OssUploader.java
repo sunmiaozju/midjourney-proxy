@@ -35,4 +35,14 @@ public class OssUploader {
         request.setExpiration(new Date(Long.MAX_VALUE)); // 设置过期时间为最大值，表示永不过期
         return ossClient.generatePresignedUrl(request);
     }
+
+    public static String transToOssUrl(String imageUrl) {
+        InputStream inputStream = ImageDownloader.downloadImage(imageUrl);
+        // 提取图片文件名称
+        String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+        fileName = System.currentTimeMillis() + "-" + fileName;
+        OssUploader.uploadToOss(fileName, inputStream);
+        URL url = OssUploader.generatePublicUrl(fileName);
+        return url.toString();
+    }
 }
